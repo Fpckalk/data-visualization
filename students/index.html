@@ -1,10 +1,42 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-
+    .domain {
+        fill: grey;
+    }
+    .bar {
+        fill: lightgrey;
+    }
+    .bar:hover {
+        fill: grey;
+    }
+    p, span {
+        margin: 0 0 0 25px;
+    }
+    #loading {
+        display: block;
+        margin-top: 50px;
+    }
+    h2 {
+        margin: 10px 0 0 25px;
+    }
+    svg:last-of-type {
+        margin-top: 50px;
+    }
 </style>
 <body>
-  <p>Hang on friend, loading...</p>
+
+    <h2>Stelling</h2>
+    <p>Een jongere leeftijd heeft positieve invloed op meer abstracte, nieuwere vakken. Zoals programmeren.</p>
+
+    <h2>Doel</h2>
+    <p>De stelling gelijk bewijzen of deze juist te ontkrachten met behulp van een visualisatie.</p>
+
+    <h2>Conclusie</h2>
+    <p>Deze vergelijking is niet het beste, kwam er nog niet helemaal uit. In mijn visualisatie is gebleken dat een oudere leeftijd voor betere programmeer cijfers zorgt.</p>
+
+
+    <span id="loading">Hang on friend, loading...</span>
 
   <!-- The JavaScript -->
   <script src="../libs/d3.min.js"></script>
@@ -22,21 +54,40 @@
     	students: function() {
     		d3.json("https://spreadsheets.google.com/feeds/list/0AnwiH3It19sBdHRJX1ZYMHVuYnNXTHdsSEtZRVIyVVE/od6/public/values?alt=json", function(data) {
     			console.log(data);
-    			var dataset = data.feed.entry;
-    			VIZ.page.generate(dataset);
+    			dataset = data.feed.entry;
+                d3.selectAll("span")
+                    .remove("span");
+
+                VIZ.page.age17(dataset);
+    			VIZ.page.age20(dataset);
             })
     	}
     }
 
+    VIZ.toolkit = {
+        getAge: function(dateString) {
+            var today = new Date(),
+                date = dateString.split("-"),
+                birthDate = new Date(date[2], date[1], date[0]),
+                age = today.getFullYear() - birthDate.getFullYear(),
+                m = today.getMonth() - birthDate.getMonth();
+
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            return age;
+        }
+    }
+
     VIZ.page = {
-    	generate: function(dataset) {
+    	age17: function(dataset) {
 
-            // var data = {e: 18.91, n: 10.03, a: 7.49, t: 6.79, i: 6.50, r: 6.41, o: 6.06, d: 5, s: 3.73, l: 3.57, g: 3.40, v: 2.85, h: 2.38, k: 2.25, m: 2.21, u: 1.99, b: 1.58, p: 1.57, w: 1.52, j: 1.46, z: 1.39, c: 1.24, f: 0.81, x: 0.040, y: 0.035, q: 0.009};
-
-            var data = dataset;
+            var data = dataset,
+                programmingGrades = [];
 
             var margin = {top: 20, right: 20, bottom: 30, left: 40},
-                width = 960 - margin.left - margin.right,
+                width = 780 - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
             var xScale = d3.scale.linear()
@@ -46,10 +97,6 @@
             var yScale = d3.scale.linear()
                 .domain([0, 10])
                 .range([height, 0]);
-
-            var xAxis = d3.svg.axis()
-                .scale(xScale)
-                .orient("bottom");
 
             var yAxis = d3.svg.axis()
                 .scale(yScale)
@@ -61,45 +108,128 @@
               .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            d3.selectAll("p")
-                .remove("p");
+            for (var i = 0; i < data.length; i++) {
+                var p = data[i]["gsx$programmeren"]["$t"];
+                var a = VIZ.toolkit.getAge(data[i]["gsx$geboortedatum"]["$t"])
+                if(p && p != "-" && a > 16 && a < 20) {
+                    programmingGrades.push(p);
+                }
+            };
 
             svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
 
             svg.append("g")
                 .attr("class", "y axis")
                 .call(yAxis);
 
-
             svg.selectAll(".bar")
-                .data(d3.entries(data))
+                .data(programmingGrades)
                 .enter()
-                .filter(function(d) {return d !== null;})
                 .append("rect")
                 .attr("class", "bar")
                 .attr("x", function(d, i) {
-                    return i * (width / data.length);
+                    return i * (width / programmingGrades.length);
                 })
                 .attr("width", function(d) {
-                    return width / data.length;
+                    return (width / programmingGrades.length) - 1;
                 })
                 .attr("y", function(d) {
-                    var p = d.value["gsx$programmeren"]["$t"];
-                    if(p && p != "-") {
-                        return yScale(parseInt(p));
-                    }
+                    return yScale(d);
                 })
                 .attr("height", function(d) {
-                    var p = d.value["gsx$programmeren"]["$t"];
-                    if(p && p != "-") {
-                        return height - yScale(parseInt(p));
-                    }
+                    return height - yScale(d);
                 });
 
-    	}
+            d3.select("body")
+                .append("p")
+                .text("Age 17-19");
+
+            d3.select("body")
+                .append("p")
+                .text("Mean: " + d3.mean(programmingGrades).toFixed(2));
+
+            d3.select("body")
+                .append("p")
+                .text("Course: Programming");
+
+    	},
+
+        age20: function(dataset) {
+
+            var data = dataset,
+                programmingGrades = [];
+
+            var margin = {top: 20, right: 20, bottom: 30, left: 40},
+                width = 780 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+            var xScale = d3.scale.linear()
+                .domain([18, 20])
+                .range([0, width]);
+
+            var yScale = d3.scale.linear()
+                .domain([0, 10])
+                .range([height, 0]);
+
+            var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left");
+
+            var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            for (var i = 0; i < data.length; i++) {
+                var p = data[i]["gsx$programmeren"]["$t"];
+                var a = VIZ.toolkit.getAge(data[i]["gsx$geboortedatum"]["$t"])
+                if(p && p != "-" && a > 19 && a < 23) {
+                    programmingGrades.push(p);
+                }
+            };
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            svg.selectAll(".bar")
+                .data(programmingGrades)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d, i) {
+                    return i * (width / programmingGrades.length);
+                })
+                .attr("width", function(d) {
+                    return (width / programmingGrades.length) - 1;
+                })
+                .attr("y", function(d) {
+                    return yScale(d);
+                })
+                .attr("height", function(d) {
+                    return height - yScale(d);
+                });
+
+            d3.select("body")
+                .append("p")
+                .text("Age 20-22");
+
+            d3.select("body")
+                .append("p")
+                .text("Mean: " + d3.mean(programmingGrades).toFixed(2));
+
+            d3.select("body")
+                .append("p")
+                .text("Course: Programming");
+
+        }
     }
 
     VIZ.controller.init();
