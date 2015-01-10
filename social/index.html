@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Extremist attacks in Europe</title>
+	
+	<!-- D3, hate to break it to ya, but you're getting used -->
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<h1>Extremist attacks in Europe</h1>
+	<script>
+		var w = 600,
+			h = 400;
+
+		var svg = d3.select('body')
+					.append('svg')
+					.attr('width', w)
+					.attr('height', h);
+
+		d3.json('extremist-attacks.json', function(dataset) {
+			console.log(dataset);
+			svg.selectAll('rect')
+				.data(dataset)
+				.enter()
+				.append('rect')
+				.attr('width', 20)
+				.attr('height', function(d) { console.log(d); })
+
+		});
+
+
+	</script>
+</body>
+</html>
