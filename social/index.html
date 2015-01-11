@@ -8,10 +8,16 @@
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 <body>
-	<h1>Extremist attacks in Europe</h1>
+	<header>
+		<h1>Extremist attacks in Europe</h1>
+		<p>The motivation behind this is to show what kind of extremist attacks Europe should be concerned about.</p>		
+	</header>
+	<button>Next year</button>
+	<p class="year">2007</p>
 	<script>
-		var w = 600,
-			h = 400;
+		var w = 600;
+		var	h = 400;
+		var padding = 20;
 
 		var svg = d3.select('body')
 					.append('svg')
@@ -19,10 +25,25 @@
 					.attr('height', h);
 
 		d3.json('extremist-attacks.json', function(dataset) {
-			var x = 0;
+			var set = 0;
+			var data = [dataset[set]];
+			var maxAmount = [];
+			var bw = w / 6;
+			var bm = 1;
+			for (var i = 0; i < data[0].types.length; i++) {
+				maxAmount.push(data[0].types[i].amount);
+			};
+
+			var yScale = d3.scale.linear()
+						    .range([h - padding, padding])
+						    .domain([0, d3.max(maxAmount)]);
+
+			var xAxis = d3.svg.axis()
+								.scale([0, w])
+								.orient('bottom');
 
 			var year = svg.selectAll('g.year')
-							.data(dataset[x])
+							.data(data)
 							.enter()
 							.append('g')
 							.attr('class', 'year');
@@ -31,13 +52,64 @@
 				.data(function(d) { return d.types; })
 				.enter()
 				.append('rect')
-				.attr('x', function(d, i) { return 21 * i; })
-				.attr('y', function(d) { return h - d.amount; })
-				.attr('width', 20)
-				.attr('height', function(d) { return d.amount; });
+				.attr('x', function(d, i) { return (bw + bm) * i; })
+				.attr('y', function(d) { return yScale(d.amount); })
+				.attr('width', bw)
+				.attr('height', function(d) { return h - yScale(d.amount); });
+
+			year.selectAll('text.type')
+				.data(function(d) { return d.types; })
+				.enter()
+				.append('text')
+				.attr('class', 'type')
+				.text(function(d) { return d.name; })
+				.attr('x', function(d, i) { return (bw + bm) * i; })
+				.attr('y', h);
+
+			year.selectAll('text.amount')
+				.data(function(d) { return d.types; })
+				.enter()
+				.append('text')
+				.attr('class', 'amount')
+				.text(function(d) { return d.amount; })
+				.attr('x', function(d, i) { return (bw + bm) * i; })
+				.attr('y', function(d) { return yScale(d.amount) - 5; });
+
+			d3.select('button')
+				.on('click', function() {
+					set++;
+					if(set == 7) set = 0;
+					drawData();
+				});
+
+			function drawData () {
+				data = [dataset[set]];
+
+				// Updating the year data
+				year.data(data);
+
+				// Now able to use this year's data
+				year.selectAll('rect')
+					.data(function(d) { return d.types; })
+					.transition()
+					.duration(250)
+					.attr('y', function(d) { return yScale(d.amount); })
+					.attr('height', function(d) { return h - yScale(d.amount); });
+
+				year.selectAll('text.amount')
+					.data(function(d) { return d.types; })
+					.transition()
+					.duration(250)
+					.text(function(d) { return d.amount; })
+					.attr('y', function(d) { return yScale(d.amount) - 5 });
+
+				d3.select('p.year')
+					.data(data)
+					.text(function(d) { return d.year; });
+			}
+
 
 		});
-
 
 	</script>
 </body>

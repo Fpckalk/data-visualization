@@ -1,86 +1,86 @@
 [
-  [{
-    "year": 2007,
-    "types": [
-	    {"name":"Islamist", "amount": 4},
-	    {"name":"Separatist", "amount": 532},
-	    {"name":"Left Wing", "amount": 21},
-	    {"name":"Right Wing", "amount": 1},
-	    {"name":"Single Issue", "amount": 1},
-	    {"name":"Not Specified", "amount": 24},
-		{"name":"Total", "amount": 583}
-	]
-  }],
-  [{
-    "year": 2008,
-    "types": [
-	    {"name":"Islamist", "amount": 0},
-	    {"name":"Separatist", "amount": 397},
-	    {"name":"Left Wing", "amount": 28},
-	    {"name":"Right Wing", "amount": 0},
-	    {"name":"Single Issue", "amount": 5},
-	    {"name":"Not Specified", "amount": 11},
-		{"name":"Total", "amount": 515}
-	]
-  }],
-  [{
-    "year": 2009,
-    "types": [
-	    {"name":"Islamist", "amount": 1},
-	    {"name":"Separatist", "amount": 237},
-	    {"name":"Left Wing", "amount": 40},
-	    {"name":"Right Wing", "amount": 4},
-	    {"name":"Single Issue", "amount": 2},
-	    {"name":"Not Specified", "amount": 10},
-		{"name":"Total", "amount": 294}
-	]
-  }],
-  [{
-    "year": 2010,
-    "types": [
-	    {"name":"Islamist", "amount": 3},
-	    {"name":"Separatist", "amount": 160},
-	    {"name":"Left Wing", "amount": 45},
-	    {"name":"Right Wing", "amount": 0},
-	    {"name":"Single Issue", "amount": 1},
-	    {"name":"Not Specified", "amount": 40},
-		{"name":"Total", "amount": 249}
-	]
-  }],
-  [{
-    "year": 2011,
-    "types": [
-	    {"name":"Islamist", "amount": 0},
-	    {"name":"Separatist", "amount": 110},
-	    {"name":"Left Wing", "amount": 37},
-	    {"name":"Right Wing", "amount": 1},
-	    {"name":"Single Issue", "amount": 0},
-	    {"name":"Not Specified", "amount": 26},
-		{"name":"Total", "amount": 174}
-	]
-  }],
-  [{
-    "year": 2012,
-    "types": [
-	    {"name":"Islamist", "amount": 6},
-	    {"name":"Separatist", "amount": 167},
-	    {"name":"Left Wing", "amount": 18},
-	    {"name":"Right Wing", "amount": 2},
-	    {"name":"Single Issue", "amount": "-"},
-	    {"name":"Not Specified", "amount": 26},
-		{"name":"Total", "amount": 219}
-	]
-  }],
-  [{
-    "year": 2013,
-    "types": [
-	    {"name":"Islamist", "amount": 1},
-	    {"name":"Separatist", "amount": 84},
-	    {"name":"Left Wing", "amount": 24},
-	    {"name":"Right Wing", "amount": 1},
-	    {"name":"Single Issue", "amount": "-"},
-	    {"name":"Not Specified", "amount": 44},
-		{"name":"Total", "amount": 152}
-	]
-  }]
+	{
+		"year": 2007,
+		"types": [
+			{"name":"Islamist", "amount": 4},
+			{"name":"Separatist", "amount": 532},
+			{"name":"Left Wing", "amount": 21},
+			{"name":"Right Wing", "amount": 1},
+			{"name":"Single Issue", "amount": 1},
+			{"name":"Not Specified", "amount": 24},
+			{"name":"Total", "amount": 583}
+		]
+	},
+	{
+		"year": 2008,
+		"types": [
+			{"name":"Islamist", "amount": 0},
+			{"name":"Separatist", "amount": 397},
+			{"name":"Left Wing", "amount": 28},
+			{"name":"Right Wing", "amount": 0},
+			{"name":"Single Issue", "amount": 5},
+			{"name":"Not Specified", "amount": 11},
+			{"name":"Total", "amount": 515}
+		]
+	},
+	{
+		"year": 2009,
+		"types": [
+			{"name":"Islamist", "amount": 1},
+			{"name":"Separatist", "amount": 237},
+			{"name":"Left Wing", "amount": 40},
+			{"name":"Right Wing", "amount": 4},
+			{"name":"Single Issue", "amount": 2},
+			{"name":"Not Specified", "amount": 10},
+			{"name":"Total", "amount": 294}
+		]
+	},
+	{
+		"year": 2010,
+		"types": [
+			{"name":"Islamist", "amount": 3},
+			{"name":"Separatist", "amount": 160},
+			{"name":"Left Wing", "amount": 45},
+			{"name":"Right Wing", "amount": 0},
+			{"name":"Single Issue", "amount": 1},
+			{"name":"Not Specified", "amount": 40},
+			{"name":"Total", "amount": 249}
+		]
+	},
+	{
+		"year": 2011,
+		"types": [
+			{"name":"Islamist", "amount": 0},
+			{"name":"Separatist", "amount": 110},
+			{"name":"Left Wing", "amount": 37},
+			{"name":"Right Wing", "amount": 1},
+			{"name":"Single Issue", "amount": 0},
+			{"name":"Not Specified", "amount": 26},
+			{"name":"Total", "amount": 174}
+		]
+	},
+	{
+		"year": 2012,
+		"types": [
+			{"name":"Islamist", "amount": 6},
+			{"name":"Separatist", "amount": 167},
+			{"name":"Left Wing", "amount": 18},
+			{"name":"Right Wing", "amount": 2},
+			{"name":"Single Issue", "amount": 0},
+			{"name":"Not Specified", "amount": 26},
+			{"name":"Total", "amount": 219}
+		]
+	},
+	{
+		"year": 2013,
+		"types": [
+			{"name":"Islamist", "amount": 1},
+			{"name":"Separatist", "amount": 84},
+			{"name":"Left Wing", "amount": 24},
+			{"name":"Right Wing", "amount": 1},
+			{"name":"Single Issue", "amount": 0},
+			{"name":"Not Specified", "amount": 44},
+			{"name":"Total", "amount": 152}
+		]
+	}
 ]
