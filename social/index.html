@@ -19,13 +19,22 @@
 					.attr('height', h);
 
 		d3.json('extremist-attacks.json', function(dataset) {
-			console.log(dataset);
-			svg.selectAll('rect')
-				.data(dataset)
+			var x = 0;
+
+			var year = svg.selectAll('g.year')
+							.data(dataset[x])
+							.enter()
+							.append('g')
+							.attr('class', 'year');
+
+			year.selectAll('rect')
+				.data(function(d) { return d.types; })
 				.enter()
 				.append('rect')
+				.attr('x', function(d, i) { return 21 * i; })
+				.attr('y', function(d) { return h - d.amount; })
 				.attr('width', 20)
-				.attr('height', function(d) { console.log(d); })
+				.attr('height', function(d) { return d.amount; });
 
 		});
 
