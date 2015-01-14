@@ -3,28 +3,80 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Extremist attacks in Europe</title>
-	
 	<!-- D3, hate to break it to ya, but you're getting used -->
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		body {
+			font-family: sans-serif;
+			background: url('http://school.fpck.nl/dv/bg.png');
+		}
+		header {
+			background-color: #491414;
+			box-shadow: 0 0 5px #000000;
+			color: #ffffff;
+			padding: 20px;
+			margin-bottom: 50px;
+		}
+			header p { line-height: 1.6em; }
+		main {
+			padding: 20px;
+			max-width: 650px;
+			margin: 0 auto;
+		}
+		h2.year {
+			float: left;
+		}
+		button {
+			padding: 10px;
+			float: left;
+			cursor: pointer;
+			display: block;
+			background-color: #ffffff;
+			border: 1px solid #dddddd;
+			color: #222222;
+			margin: -5px 0 50px 15px;
+		}
+		button + p {
+			display: block;
+			clear: both;
+		}
+		svg {
+			display: block;
+		}
+
+	</style>
 </head>
 <body>
 	<header>
 		<h1>Extremist attacks in Europe</h1>
-		<p>The motivation behind this is to show what kind of extremist attacks Europe should be concerned about.</p>		
+		<p>
+			The motivation behind this is to show what kind of extremist attacks Europe should be concerned about.
+			This data concerns the total amount of extremist attacks, succesful or not, sorted by motivation.
+			Do note that this data does not contain the amount of people that were killed in the attacks.<br>
+			The data was gathered from the terrorism reports provided by Europol.
+		</p>		
 	</header>
-	<button>Next year</button>
-	<p class="year">2007</p>
+	<main>
+		<h2 class="year">2007</h2>
+		<button>Next year</button>
+		<p>Extremist acts per year</p>
+	</main>
 	<script>
 		var w = 600;
 		var	h = 400;
-		var padding = 20;
+		var padding = 30;
 
-		var svg = d3.select('body')
+		var svg = d3.select('main')
 					.append('svg')
 					.attr('width', w)
 					.attr('height', h);
 
-		d3.json('extremist-attacks.json', function(dataset) {
+		d3.json('http://school.fpck.nl/dv/data/extremist-attacks.json', function(dataset) {
 			var set = 0;
 			var data = [dataset[set]];
 			var maxAmount = [];
@@ -35,12 +87,8 @@
 			};
 
 			var yScale = d3.scale.linear()
-						    .range([h - padding, padding])
-						    .domain([0, d3.max(maxAmount)]);
-
-			var xAxis = d3.svg.axis()
-								.scale([0, w])
-								.orient('bottom');
+						    .domain([0, d3.max(maxAmount)])
+						    .range([h - padding, padding]);
 
 			var year = svg.selectAll('g.year')
 							.data(data)
@@ -48,23 +96,30 @@
 							.append('g')
 							.attr('class', 'year');
 
-			year.selectAll('rect')
-				.data(function(d) { return d.types; })
-				.enter()
-				.append('rect')
-				.attr('x', function(d, i) { return (bw + bm) * i; })
-				.attr('y', function(d) { return yScale(d.amount); })
-				.attr('width', bw)
-				.attr('height', function(d) { return h - yScale(d.amount); });
+			var info = svg.selectAll('g.types')
+							.data(data)
+							.enter()
+							.append('g')
+							.attr('class', 'types');
 
-			year.selectAll('text.type')
+			info.selectAll('text.type')
 				.data(function(d) { return d.types; })
 				.enter()
 				.append('text')
 				.attr('class', 'type')
 				.text(function(d) { return d.name; })
 				.attr('x', function(d, i) { return (bw + bm) * i; })
-				.attr('y', h);
+				.attr('y', h - padding);
+
+			year.selectAll('rect')
+				.data(function(d) { return d.types; })
+				.enter()
+				.append('rect')
+				.attr('x', function(d, i) { return (bw + bm) * i; })
+				.attr('y', function(d) { return yScale(d.amount) - padding; })
+				.attr('width', bw)
+				.attr('height', function(d) { return h - yScale(d.amount) - padding; });
+
 
 			year.selectAll('text.amount')
 				.data(function(d) { return d.types; })
@@ -72,8 +127,8 @@
 				.append('text')
 				.attr('class', 'amount')
 				.text(function(d) { return d.amount; })
-				.attr('x', function(d, i) { return (bw + bm) * i; })
-				.attr('y', function(d) { return yScale(d.amount) - 5; });
+				.attr('x', function(d, i) { return (bw + bm) * i + 5; })
+				.attr('y', function(d) { return yScale(d.amount) - padding - 5; });
 
 			d3.select('button')
 				.on('click', function() {
@@ -93,17 +148,17 @@
 					.data(function(d) { return d.types; })
 					.transition()
 					.duration(250)
-					.attr('y', function(d) { return yScale(d.amount); })
-					.attr('height', function(d) { return h - yScale(d.amount); });
+					.attr('y', function(d) { return yScale(d.amount) - padding; })
+					.attr('height', function(d) { return h - yScale(d.amount) - padding; });
 
 				year.selectAll('text.amount')
 					.data(function(d) { return d.types; })
 					.transition()
 					.duration(250)
 					.text(function(d) { return d.amount; })
-					.attr('y', function(d) { return yScale(d.amount) - 5 });
+					.attr('y', function(d) { return yScale(d.amount) - padding - 5 });
 
-				d3.select('p.year')
+				d3.select('h2.year')
 					.data(data)
 					.text(function(d) { return d.year; });
 			}

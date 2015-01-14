@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>What I spook uit in my free tijd</title>
+	<!-- D3, I confess, I slightly love you. Shall we mate? -->
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<script>
+		var w = 800;
+		var h = 400;
+
+		svg = d3.select('body')
+				.append('svg')
+				.attr('width', w)
+				.attr('height', h);
+
+		d3.json('dataset.json', function(d) {
+			svg.selectAll('g')
+				.data(d)
+				.enter()
+				.append('g')
+				.attr('class', function(d) { console.log(d) });
+
+		});
+	</script>
+</body>
+</html>
