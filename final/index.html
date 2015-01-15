@@ -10,6 +10,7 @@
 	<script>
 		var w = 800;
 		var h = 400;
+		var bh = 10;
 
 		svg = d3.select('body')
 				.append('svg')
@@ -17,11 +18,20 @@
 				.attr('height', h);
 
 		d3.json('dataset.json', function(d) {
-			svg.selectAll('g')
-				.data(d)
+			day = svg.selectAll('g')
+						.data(d)
+						.enter()
+						.append('g')
+						.attr('transform', function(d, i) { return 'translate(0, ' + bh * i + ')' })
+						.attr('class', function(d, i) { return "day " + i });
+
+			day.selectAll('rect')
+				.data(function(d) { return d.data })
 				.enter()
-				.append('g')
-				.attr('class', function(d) { console.log(d) });
+				.append('rect')
+				.attr('x', function(d, i) { return i * 20 })
+				.attr('width', 20)
+				.attr('height', bh);
 
 		});
 	</script>
