@@ -33,6 +33,26 @@
 				.attr('width', 20)
 				.attr('height', bh);
 
+			day.selectAll('text')
+				.data(function(d) { return d.data })
+				.enter()
+				.append('text')
+				.attr('x', function(d, i) { return i * 20 })
+				.text(function(d) { 
+					// Pop pop pop, watching cpu's drop
+					for(var key in d) {
+						if(key == "Start" || key == "End") {
+							continue;
+						}
+						else if (d[key].length && d[key] !== "x") {
+							return d[key];
+						}
+						else if (d[key] == "x") {
+							return key;
+						}
+					}
+				});
+
 		});
 	</script>
 </body>
