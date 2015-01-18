@@ -5,55 +5,160 @@
 	<title>What I spook uit in my free tijd</title>
 	<!-- D3, I confess, I slightly love you. Shall we mate? -->
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<style>
+		body { margin: 0; }
+		svg {
+			display: block;
+			margin: 0 auto;
+		}
+		text { fill: transparent; }
+
+		.empty { fill: #ededed; }
+			g:hover .empty { fill: #d5d5d5; }		
+		.work { fill: #5371f1; }
+		.game { fill: #cb485e; }
+		.movie { fill: #; }
+		.teaching { fill: pink; }
+
+		time {
+			position: fixed;
+			pointer-events: none;
+			left: calc((100% - 1450px) / 2);
+			z-index: 1;
+		}
+			time span {
+				background-color: #ffffff;
+				padding: 10px;
+				box-shadow: 0 0 4px rgba(0,0,0,.4);
+			}
+			time .line {
+				width: 1px;
+				height: 1400px;
+				background-color: #222222;
+				margin-left: 50%;
+			}
+	</style>
 </head>
 <body>
+	<time>
+		<span>00:00</span>
+		<div class="line"></div>
+	</time>
 	<script>
-		var w = 800;
-		var h = 400;
-		var bh = 10;
+		var w = 1400;
+		var h = 2000;
 
 		svg = d3.select('body')
 				.append('svg')
 				.attr('width', w)
 				.attr('height', h);
 
-		d3.json('dataset.json', function(d) {
+		d3.json('dataset.json', function(dataset) {
+
+			var bh = h / dataset.length;
+			var bm = 2;
+			var t = [
+				timeTo(d3.min(getTimes(dataset)[0]), 'seconds'),
+				timeTo(d3.max(getTimes(dataset)[1]), 'seconds')
+			];
+			xScale = d3.scale.linear()
+									.domain(t)
+									.range([0, w]);
+
 			day = svg.selectAll('g')
-						.data(d)
+						.data(dataset)
 						.enter()
 						.append('g')
 						.attr('transform', function(d, i) { return 'translate(0, ' + bh * i + ')' })
-						.attr('class', function(d, i) { return "day " + i });
+						.attr('class', function(d, i) { return "day " + i })
+						.on('mousemove', function() { moveTime(d3.mouse(this)) });
+
+			day.append('rect')
+				.attr('width', w)
+				.attr('height', bh)
+				.attr('class', 'empty');
 
 			day.selectAll('rect')
 				.data(function(d) { return d.data })
 				.enter()
 				.append('rect')
-				.attr('x', function(d, i) { return i * 20 })
-				.attr('width', 20)
-				.attr('height', bh);
-
-			day.selectAll('text')
-				.data(function(d) { return d.data })
-				.enter()
-				.append('text')
-				.attr('x', function(d, i) { return i * 20 })
-				.text(function(d) { 
-					// Pop pop pop, watching cpu's drop
-					for(var key in d) {
-						if(key == "Start" || key == "End") {
-							continue;
-						}
-						else if (d[key].length && d[key] !== "x") {
-							return d[key];
-						}
-						else if (d[key] == "x") {
-							return key;
-						}
+				.attr('x', function(d) { return xScale(timeTo(d.Start, 'seconds')) })
+				.attr('width', function(d) {  return xScale(timeTo(d.End, 'seconds')) - xScale(timeTo(d.Start, 'seconds')) })
+				.attr('height', bh)
+				.attr('class', function(d) { return getKey(d).toLowerCase() })
+				.on('mouseover', function(d) {
+					key = getKey(d);
+					if(d[key] == "x") {
+						console.log(key);
+					} else {
+						console.log(d[key]);
 					}
+					console.log(d.Start);
 				});
 
+			// day.selectAll('text')
+			// 	.data(function(d) { return d.data })
+			// 	.enter()
+			// 	.append('text')
+			// 	.attr('x', function(d) { return xScale(timeTo(d.Start, 'seconds')) })
+			// 	.attr('y', 20)
+			// 	.text(function(d) {
+			// 		key = getKey(d);
+			// 		if(d[key] == "x") {
+			// 			return key;
+			// 		} else {
+			// 			return d[key];
+			// 		}
+			// 	});
+
 		});
+
+		function getTimes (dataset) {
+			var s = [];
+			var e = [];
+			for (var i = 0; i < dataset.length; i++) {
+				for (var x = 0; x < dataset[i].data.length; x++) {
+					s.push(dataset[i].data[x].Start);
+					e.push(dataset[i].data[x].End);
+				};
+			};
+			return [s, e];
+		}
+
+		function timeTo (time, type) {
+			if(type == 'seconds') {
+				var time = time.split(':');
+				var seconds = (+time[0]) * 60 * 60 + (+time[1]) * 60;
+				return seconds;
+			}
+		}
+
+		function getKey (object) {
+			for(var key in object) {
+				if(key == "Start" || key == "End") {
+					continue;
+				}
+				else if (object[key].length) {
+					return key;
+				}
+			}
+		}
+
+		function moveTime (xy) {
+			var vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+			d3.select('time')
+				.style('margin-left', xy[0] + 'px')
+				.select('span')
+				.text( secondsToHm(xScale.invert(xy[0])) );
+		}
+
+		function secondsToHm(d) {
+			d = Number(d);
+			var h = Math.floor(d / 3600);
+			var m = Math.floor(d % 3600 / 60);
+			return ((h > 0 ? h + ":" : "0:") + (m > 0 ? (h > 0 && m < 10 ? "0" : "") + m + "" : "0"));
+		}
+
 	</script>
 </body>
 </html>
